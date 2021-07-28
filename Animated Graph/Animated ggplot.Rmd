@@ -1,0 +1,51 @@
+---
+title: "Animated Plot in R ggplot2 and Consistency of Parameter"
+author: "FRK"
+date: "7/20/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, warning=FALSE, message=FALSE}
+# libraries:
+library(tidyverse)
+library(ggplot2)
+library(gganimate)
+library(hrbrthemes)
+
+
+t <- 100
+x <- NULL
+for(i in 1:t){
+  x[i] <- rbinom(1, 1, 0.50)
+}
+d <- data.frame(n=1:length(x), x, p = cumsum(x))
+d$p <- d$p / d$n
+
+# See the generted data
+head(d)
+
+
+```
+
+n is Sample number, x is the outcome of that sample, p is the estimated probability till that sample.
+
+```{r, warning=FALSE, message=FALSE}
+# Plot Animated Graph
+d %>%
+  ggplot( aes(x=n, y=p)) +
+  geom_line() +
+  geom_point() +
+  xlim(0, 100) +
+  ylim(0, 1) +
+  geom_hline(yintercept = 0.50, alpha = 0.4, color = "red") +
+#  scale_color_viridis(discrete = TRUE) +
+  ggtitle("Convergence of Estimate with Sample Size") +
+  theme_ipsum() +
+  ylab("Estimated Probability") +
+  transition_reveal(n)
+```
+
